@@ -1,12 +1,35 @@
-from machine import Pin, ADC
+''' Description: This script does the following:
+                -Collects Raspberry Pi Pico sensor data with 3 ADCs (Pins GP26-GP28)
+                -Sends readable sensor data to a Digi Zigbee 3 via UART (Tx = GP4, Rx = GP5)
+                -Repeats this process over a specified time interval
+    
+    ADC References:
+    - https://how2electronics.com/how-to-use-adc-in-raspberry-pi-pico-adc-example-code/
+    - https://microcontrollerslab.com/raspberry-pi-pico-adc-tutorial/
+                
+    UART References:
+    - https://docs.micropython.org/en/latest/rp2/quickref.html
+    - https://docs.micropython.org/en/latest/library/machine.UART.html#machine-uart '''
+
+from machine import Pin, ADC, UART
 from utime import sleep
+
+''' Detach the UART from REPL mode
+import os
+os.dupterm(None, 1) '''
 
 # Initialize ADC pins
 adc0 = ADC(26)
 adc1 = ADC(27)
 adc2 = ADC(28)
 
-while(1):
+# Initialize UART1
+uart1 = UART(1, baudrate=9600, tx=Pin(4), rx=Pin(5))
+
+# Set a sleep time in seconds for data collecting
+sleepTime = 1
+
+while(59):
     
     # Perform ADC and convert the digital value into a voltage reading
     
@@ -17,4 +40,11 @@ while(1):
     adc0_value = adc0.read_u16() * 3.3 / 65536
     adc1_value = adc1.read_u16() * 3.3 / 65536
     adc2_value = adc2.read_u16() * 3.3 / 65536
-    sleep(1) # X = Takes #seconds as input
+    
+    # Send the formatted data to a XBee via UART
+    uart1.write('ADC0 Reading: ')  
+    uart1.write(str(adc0_value))
+    uart1.write('ADC1 Reading: ', str(adc1_value))  
+    
+    # Put the system to sleep
+    utime.sleep(sleepTime) # X = Takes #seconds as input
