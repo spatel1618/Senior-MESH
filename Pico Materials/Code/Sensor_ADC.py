@@ -42,7 +42,7 @@ while(59):
     adc2_value = adc2.read_u16() * 3.3 / 65536
     
     # Send the formatted data to a XBee via UART
-    uart1.write('ADC0 Reading: ')  
+    uart1.write('ADC0 Reading: ' + str(adc0_value))  
     uart1.write(str(adc0_value))
     uart1.write('ADC1 Reading: ', str(adc1_value))  
     
