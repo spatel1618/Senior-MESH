@@ -43,8 +43,8 @@ while(59):
     
     # Send the formatted data to a XBee via UART
     uart1.write('ADC0 Reading: ' + str(adc0_value))  
-    uart1.write(str(adc0_value))
-    uart1.write('ADC1 Reading: ', str(adc1_value))  
+    uart1.write('ADC1 Reading: ' + str(adc1_value))
+    uart1.write('ADC2 Reading: ' + str(adc2_value))
     
     # Put the system to sleep
-    utime.sleep(sleepTime) # X = Takes #seconds as input
+    sleep(sleepTime) # X = Takes #seconds as input
