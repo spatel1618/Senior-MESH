@@ -23,11 +23,12 @@ adc0 = ADC(26)
 adc1 = ADC(27)
 adc2 = ADC(28)
 
-# Initialize UART1
-uart1 = UART(1, baudrate=9600, tx=Pin(4), rx=Pin(5))
+# Initialize UART0
+uart0 = UART(0, 9600)
+uart0.init(baudrate=9600, bits=8, parity=None, stop=1, tx=Pin(0), rx=Pin(1), cts = Pin(2), rts = Pin(3), flow = UART.RTS | UART.CTS)
 
 # Set a sleep time in seconds for data collecting
-sleepTime = 1
+sleepTime = 2
 
 while(59):
     
@@ -42,9 +43,10 @@ while(59):
     adc2_value = adc2.read_u16() * 3.3 / 65536
     
     # Send the formatted data to a XBee via UART
-    uart1.write('ADC0 Reading: ' + str(adc0_value))  
-    uart1.write('ADC1 Reading: ' + str(adc1_value))
-    uart1.write('ADC2 Reading: ' + str(adc2_value))
+    #uart0.write('ADC0 Reading: ' + str(adc0_value))
+    uart0.write("Hello\r\n")
+    #uart0.write('ADC1 Reading: ' + str(adc1_value))
+    #uart0.write('ADC2 Reading: ' + str(adc2_value))
     
     # Put the system to sleep
     sleep(sleepTime) # X = Takes #seconds as input
