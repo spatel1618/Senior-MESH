@@ -15,14 +15,17 @@ uart0.init(baudrate=9600, bits=8, parity=None, stop=1, tx=Pin(0), rx=Pin(1), cts
 
 # Set a sleep time in seconds for data collecting
 sleepTime = 2
+a = 1
 
 while(59):
         
     # Send data to a XBee via UART
-    uart0.write("Hello\r\n")
+    uart0.write(str(a))
     
     # Put the system to sleep
     sleep(sleepTime) # X = Takes #seconds as input
+    
+    a = a + 1
 
 '''
 from machine import UART, Pin
