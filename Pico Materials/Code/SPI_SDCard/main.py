@@ -1,45 +1,34 @@
-''' Description: This file does the following:
-                -Initializes SPI between a Raspberry Pi Pico and Adafruit MicroSD Card Breakout Board
-                -Has the Raspberry Pi Pico write to the SD card
-    Reference: https://learn.adafruit.com/adafruit-micro-sd-breakout-board-card-tutorial/circuitpython '''
+import machine
+import sdcard
+import uos
 
-import board
-import busio
-import sdcardio
-import storage
+# Assign chip select (CS) pin (and start it high)
+cs = machine.Pin(9, machine.Pin.OUT)
 
-''' To see all the available board-specific objects and pins for your board,
-    enter the REPL (>>>) and run the following commands:
-    import board
-    dir(board) '''
+# Intialize SPI peripheral (start with 1 MHz)
+spi = machine.SPI(1,
+                  baudrate=1000000,
+                  polarity=0,
+                  phase=0,
+                  bits=8,
+                  firstbit=machine.SPI.MSB,
+                  sck=machine.Pin(10),
+                  mosi=machine.Pin(11),
+                  miso=machine.Pin(8))
 
-# Use the board's primary SPI bus
-spi = board.SPI()
-# Or, use an SPI bus on specific pins:
-#spi = busio.SPI(board.SD_SCK, MOSI=board.SD_MOSI, MISO=board.SD_MISO)
+# Initialize SD card
+sd = sdcard.SDCard(spi, cs)
 
-# For breakout boards, you can choose any GPIO pin that's convenient:
-cs = board.D10
-# Boards with built in SPI SD card slots will generally have a
-# pin called SD_CS:
-#cs = board.SD_CS
+# Mount filesystem
+vfs = uos.VfsFat(sd)
+uos.mount(vfs, "/sd")
 
-sdcard = sdcardio.SDCard(spi, cs)
-vfs = storage.VfsFat(sdcard)
+# Create a file and write something to it
+with open("/sd/test01.txt", "w") as file:
+    file.write("Hello, SD World!\r\n")
+    file.write("This is a test\r\n")
 
-''' Finally you can mount the microSD card's filesystem into the CircuitPython filesystem.
-    For example, to make the path /sd on the CircuitPython filesystem read and write from the card
-    run this command: '''
-
-storage.mount(vfs, "/sd")
-
-''' At this point, you can read and write to the SD card using common Python functions like open, read, and write.
-    The filenames will all begin with "/sd/" to differentiate them from the files on the CIRCUITPY drive. '''
-
-# Create a file on the microSD card and write to it
-with open("/sd/test.txt", "w") as f:
-    f.write("Hello world!\r\n")
-    
-# Append a line to the file
-with open("/sd/test.txt", "a") as f:
-    f.write("This is another line!\r\n")
+# Open the file we just created and read from it
+with open("/sd/test01.txt", "r") as file:
+    data = file.read()
+    print(data)
