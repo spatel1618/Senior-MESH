@@ -9,7 +9,7 @@
 import xbee
 import time
 from machine import Pin
-#from sys import stdin
+from sys import stdin
 from sys import stdout
 
 """CONSTANTS"""
@@ -50,23 +50,17 @@ def buttonCmd():
 def picoReadCmd():
     response = ""
 
-    #temp for test purposes
-    response += "testing testing 123"
-
-    return response
-
-''' 
-#For when we actually implement Pico read function
     data = stdin.read()
     if data is not None:
         response += "%.2f" % data
     else:
         response = "No Sample"
-'''
+
+    return response
+
 
 def picoWriteCmd(response):
-
-    stdout.buffer.write(response)
+    stdout.buffer.write(str(response))
 
 
 """COMMUNICATION SETTINGS"""
@@ -121,10 +115,17 @@ def coordCallBack(status):
         for dev in Devs:
             print("Device %s: " % (''.join('{:02x}'.format(x).upper() for x in dev)))
 
-            data = picoReadCmd()
-            picoWriteCmd(data)
+            #xbee.transmit(dev, tx_options=1)
 
-            print("\t{} <- {}".format("picoReadCmd", data))
+            # Poll for response
+            received_msg = xbee.receive()
+
+            #while not received_msg:
+            #    received_msg = xbee.receive()
+
+            picoWriteCmd(received_msg)
+
+            print("\t{} <- {}".format("picoWriteCmd", received_msg))
 
         print() #insert newline
 
