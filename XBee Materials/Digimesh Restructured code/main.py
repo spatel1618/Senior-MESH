@@ -10,6 +10,7 @@ import xbee
 import time
 from machine import Pin
 #from sys import stdin
+from sys import stdout
 
 """CONSTANTS"""
 
@@ -55,13 +56,18 @@ def picoReadCmd():
     return response
 
 ''' 
-#For when we actually implement Pico
+#For when we actually implement Pico read function
     data = stdin.read()
     if data is not None:
         response += "%.2f" % data
     else:
         response = "No Sample"
 '''
+
+def picoWriteCmd(response):
+
+    stdout.buffer.write(response)
+
 
 """COMMUNICATION SETTINGS"""
 
@@ -115,7 +121,10 @@ def coordCallBack(status):
         for dev in Devs:
             print("Device %s: " % (''.join('{:02x}'.format(x).upper() for x in dev)))
 
-            print("\t{} <- {}".format("picoReadCmd", picoReadCmd()))
+            data = picoReadCmd()
+            picoWriteCmd(data)
+
+            print("\t{} <- {}".format("picoReadCmd", data))
 
         print() #insert newline
 
