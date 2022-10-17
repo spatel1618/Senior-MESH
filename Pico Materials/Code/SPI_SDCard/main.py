@@ -2,8 +2,16 @@ import machine
 import sdcard
 import uos
 
+'''
+Spi 1 Rpi pinout:
+    SCK = GP10 (pin 14)
+    Tx = GP11 (pin 15)
+    Rx = GP12 (pin 16)
+    CS = GP13 (pin 17)
+'''
+
 # Assign chip select (CS) pin (and start it high)
-cs = machine.Pin(9, machine.Pin.OUT)
+cs = machine.Pin(13, machine.Pin.OUT)
 
 # Intialize SPI peripheral (start with 1 MHz)
 spi = machine.SPI(1,
@@ -14,7 +22,7 @@ spi = machine.SPI(1,
                   firstbit=machine.SPI.MSB,
                   sck=machine.Pin(10),
                   mosi=machine.Pin(11),
-                  miso=machine.Pin(8))
+                  miso=machine.Pin(12))
 
 # Initialize SD card
 sd = sdcard.SDCard(spi, cs)
@@ -23,10 +31,12 @@ sd = sdcard.SDCard(spi, cs)
 vfs = uos.VfsFat(sd)
 uos.mount(vfs, "/sd")
 
+
 # Create a file and write something to it
 with open("/sd/test01.txt", "w") as file:
     file.write("Hello, SD World!\r\n")
     file.write("This is a test\r\n")
+
 
 # Open the file we just created and read from it
 with open("/sd/test01.txt", "r") as file:
