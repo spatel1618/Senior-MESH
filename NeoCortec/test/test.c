@@ -24,6 +24,10 @@
 #define UART_CTS_PIN 2
 #define UART_RTS_PIN 3
 
+#define DATA_BITS 8
+#define STOP_BITS 1
+#define PARITY    UART_PARITY_NONE
+
 
 // Global declarations expected by NcApi
 tNcApi g_ncApi[1];
@@ -38,24 +42,15 @@ void ExampleSetupNcApi();
 
 
 int main() {
-    // Set up our UART with the required speed.
-    uart_init(UART_ID, BAUD_RATE);
-
-    // Set the TX and RX pins by using the function select on the GPIO
-    // Set datasheet for more information on function select
-    gpio_set_function(UART_TX_PIN, GPIO_FUNC_UART);
-    gpio_set_function(UART_RX_PIN, GPIO_FUNC_UART);
-    gpio_set_function(UART_CTS_PIN, GPIO_FUNC_UART);
-    gpio_set_function(UART_RTS_PIN, GPIO_FUNC_UART);
-
-    uart_set_hw_flow(uart0, true, true);
-
+    
+	picoSetup();
     ExampleSetupNcApi();
 
 	char msg[5] = {'h', 'e', 'l', 'l', 'o'};
 	uint8_t  msgHex[5] = {0x68, 0x65, 0x6C, 0x6C, 0x6F};
 	uint8_t msgLen = 5;
-	uint8_t ch = 0;
+	char data[7] = {0,0,0,0,0,0,0};
+	uint8_t nodeId = 0x0020;
 
 	uint8_t getNodeInfo[1] = {0x08};
 	uint8_t getListReq[1] = {0x09};
@@ -82,8 +77,12 @@ int main() {
 
 		//NcApiSupportTxData(0, fullAckTestMsg, 6); //THIS WORKS!!!!!!!!!!!
 
-		ch = uart_getc(UART_ID);
-		printf("%c", ch);
+		uart_read_blocking(UART_ID, data, 7);
+
+		for(int i = 0; i<7; i++)
+		{
+			printf("%c", data[i]);
+		}
 
 
 	}
@@ -93,6 +92,31 @@ int main() {
 
 /// \end::hello_uart[]
 
+/*************************************************/
+
+
+void picoSetup()
+{
+
+	// Set up our UART with the required speed.
+	stdio_init_all(); // NEED FOR COM PORT TO SHOW UP!!!!!!!!!!!!!!!!!!!
+    uart_init(UART_ID, BAUD_RATE);
+
+    // Set the TX and RX pins by using the function select on the GPIO
+    // Set datasheet for more information on function select
+    gpio_set_function(UART_TX_PIN, GPIO_FUNC_UART);
+    gpio_set_function(UART_RX_PIN, GPIO_FUNC_UART);
+    gpio_set_function(UART_CTS_PIN, GPIO_FUNC_UART);
+    gpio_set_function(UART_RTS_PIN, GPIO_FUNC_UART);
+
+    uart_set_hw_flow(uart0, true, true);
+
+	uart_set_format(UART_ID, DATA_BITS, STOP_BITS, PARITY);
+
+	// Turn off FIFO's - we want to do this character by character
+    uart_set_fifo_enabled(UART_ID, false);
+
+}
 
 
 /*************************************************/
