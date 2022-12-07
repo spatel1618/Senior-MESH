@@ -1,5 +1,5 @@
 ''' Description: This script does the following:
-                -Sends a string to a Digi Zigbee 3 Digimesh 2.4 Firmware 300D via UART0 (Tx = GP0, Rx = GP1)
+                -Sends a string from a Raspberry Pi Pico to a Digi Zigbee 3 Digimesh 2.4 Firmware 300D via UART0 (Tx = GP0, Rx = GP1)
                 -Repeats this process over a specified time interval
                 
     UART References:
