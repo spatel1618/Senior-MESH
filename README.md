@@ -10,4 +10,4 @@ Senior Design Project- Sahil &amp; Taj
        * https://github.com/spatel1618/Senior-MESH/blob/main/Pico%20Materials/RPi_PiPico_Digital_v10.pdf
 3. XBee Materials ~ Optional
    * This contains materials for the XBee MESH that was originally being used.
-   * You don't need anything here for the NeoCortec MESH.
+   * You don't need anything from here for the NeoCortec MESH.
