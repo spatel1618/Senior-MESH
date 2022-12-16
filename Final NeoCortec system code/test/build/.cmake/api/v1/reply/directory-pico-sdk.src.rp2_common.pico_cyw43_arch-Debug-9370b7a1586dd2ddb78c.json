@@ -1,0 +1,14 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : [],
+		"nodes" : []
+	},
+	"installers" : [],
+	"paths" : 
+	{
+		"build" : "pico-sdk/src/rp2_common/pico_cyw43_arch",
+		"source" : "C:/Users/Owner/Desktop/Senior Design Code/pico-sdk/src/rp2_common/pico_cyw43_arch"
+	}
+}
